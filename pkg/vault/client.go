@@ -45,17 +45,17 @@ func NewClient(conf *api.Config, version uint8, prefix string) (*Client, error) 
 		return nil, err
 	}
 
-	return &Client{
+	c := &Client{
 		prefix:    prefix,
 		kvVersion: version,
 		Client:    client,
-	}, nil
+	}
+
+	return c, nil
 }
 
 // Copy recursively copies the source path to the destination path
 func (c *Client) Copy(src, dst string, opt ...CopyOptions) error {
-	// srcpath := c.getGetPath(src)
-
 	mm, err := c.RecursiveGet(src)
 	if err != nil {
 		return err
@@ -63,7 +63,6 @@ func (c *Client) Copy(src, dst string, opt ...CopyOptions) error {
 
 	if len(opt) > 0 && opt[0].KeysOnly {
 		return c.copyKeys(src, dst, mm)
-		// return fmt.Errorf("TBI")
 	}
 
 	for k, v := range mm {

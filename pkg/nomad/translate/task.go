@@ -94,10 +94,8 @@ func translateTemplate(t *api.Template) *structs.Template {
 		out.ChangeSignal = *t.ChangeSignal
 	}
 	if t.EmbeddedTmpl != nil {
-		// out.Data = *t.EmbeddedTmpl
 		tmo := strings.Replace(*t.EmbeddedTmpl, `"`, `\"`, -1)
 		out.Data = strings.Replace(tmo, "\n", "\\n", -1)
-		// fmt.Println(out.Data)
 	}
 	if t.SourcePath != nil {
 		out.Source = *t.SourcePath
