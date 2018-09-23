@@ -7,6 +7,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const (
+	testVaultAddr  = "http://127.0.0.1:8200"
+	testVaultToken = "myroot"
+)
+
 var testKVS = map[string]map[string]interface{}{
 	"key": map[string]interface{}{
 		"key1": "value",
@@ -28,8 +33,8 @@ func Test_Client(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	client.SetAddress("http://127.0.0.1:8200")
-	client.SetToken("myroot")
+	client.SetAddress(testVaultAddr)
+	client.SetToken(testVaultToken)
 
 	for k, v := range testKVS {
 		err = client.Set(k, v)
