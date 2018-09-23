@@ -5,10 +5,10 @@ import (
 
 	"github.com/hashicorp/nomad/api"
 	"github.com/hashicorp/nomad/jobspec"
-	"github.com/rodaine/hclencoder"
 
 	"github.com/euforia/hashichain/pkg/nomad/structs"
 	"github.com/euforia/hashichain/pkg/nomad/translate"
+	"github.com/euforia/hclencoder"
 )
 
 // ReadJobSpecFile reads and parses a nomad job spec from the
