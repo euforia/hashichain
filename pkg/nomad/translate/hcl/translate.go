@@ -6,9 +6,9 @@ import (
 	"github.com/hashicorp/nomad/api"
 )
 
-// JobSpec translates a native nomad job into one that can be written
+// NewJob translates a native nomad job into one that can be written
 // out as HCL
-func JobSpec(job *api.Job) *structs.Job {
+func NewJob(job *api.Job) *structs.Job {
 	js := &structs.Job{
 		Name:        *job.Name,
 		Region:      *job.Region,

@@ -25,7 +25,7 @@ func ReadJobSpec(r io.Reader) (*api.Job, error) {
 // WriteJobSpec translates and writes out the job in HCL.  This is useful to
 // write out a valid job spec
 func WriteJobSpec(w io.Writer, job *api.Job) error {
-	j := hcl.JobSpec(job)
+	j := hcl.NewJob(job)
 	b, err := hclencoder.Encode(map[string]*structs.Job{
 		`job "` + j.Name + `"`: j,
 	})

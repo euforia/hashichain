@@ -4,25 +4,18 @@ import (
 	"fmt"
 
 	"github.com/docker/cli/cli/compose/types"
+	"github.com/euforia/cchain/pkg/compose"
 	"github.com/hashicorp/nomad/api"
 )
 
-func translateDeployUpdateConfig(c *types.UpdateConfig) *api.UpdateStrategy {
-	if c == nil {
-		return nil
+// NewJob converts the compose config to a nomad job spec
+func NewJob(workdir string, env map[string]string, filelist ...string) (*api.Job, error) {
+	c, err := compose.NewCompose(workdir, env, filelist...)
+	if err != nil {
+		return nil, err
 	}
 
-	stagger := c.Delay
-	us := &api.UpdateStrategy{
-		Stagger: &stagger,
-	}
-
-	if c.Parallelism != nil {
-		p := int(*c.Parallelism)
-		us.MaxParallel = &p
-	}
-
-	return us
+	return translate(c.Config())
 }
 
 func translate(c *types.Config) (*api.Job, error) {
@@ -68,6 +61,24 @@ func translate(c *types.Config) (*api.Job, error) {
 	}
 
 	return job.AddTaskGroup(group), nil
+}
+
+func translateDeployUpdateConfig(c *types.UpdateConfig) *api.UpdateStrategy {
+	if c == nil {
+		return nil
+	}
+
+	stagger := c.Delay
+	us := &api.UpdateStrategy{
+		Stagger: &stagger,
+	}
+
+	if c.Parallelism != nil {
+		p := int(*c.Parallelism)
+		us.MaxParallel = &p
+	}
+
+	return us
 }
 
 func makeTaskEnv(e map[string]*string) map[string]string {

@@ -7,7 +7,6 @@ import (
 
 	"github.com/hashicorp/nomad/jobspec"
 
-	"github.com/euforia/cchain/pkg/compose"
 	"github.com/euforia/hashichain/pkg/nomad"
 )
 
@@ -17,12 +16,7 @@ var testComposeFiles = []string{
 }
 
 func Test_Compose(t *testing.T) {
-	c, err := compose.NewCompose(".", nil, testComposeFiles...)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	job, err := translate(c.Config())
+	job, err := NewJob(".", nil, testComposeFiles...)
 	if err != nil {
 		t.Fatal(err)
 	}

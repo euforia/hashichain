@@ -18,7 +18,7 @@ func Test_Translator(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	j := JobSpec(job)
+	j := NewJob(job)
 
 	b, err := hclencoder.Encode(map[string]*structs.Job{`job "` + j.Name + `"`: j})
 	if err != nil {
