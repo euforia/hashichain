@@ -4,8 +4,6 @@ import (
 	"flag"
 	"log"
 	"os"
-
-	"github.com/euforia/hashichain/pkg/nomad"
 )
 
 var (
@@ -16,7 +14,7 @@ func main() {
 	flag.Parse()
 
 	// Parse job spec into struct
-	job, err := nomad.ReadJobSpecFile(*infile)
+	job, err := translate.ReadJobSpecFile(*infile)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -27,7 +25,7 @@ func main() {
 	//
 
 	// Write out spec to stdout
-	err = nomad.WriteJobSpec(os.Stdout, job)
+	err = translate.WriteJobSpec(os.Stdout, job)
 	if err != nil {
 		log.Fatal(err)
 	}

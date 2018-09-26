@@ -1,5 +1,5 @@
-// Package translate translates a nomad job to hcl encodable nomad job
-package translate
+// Package hcl translates a nomad job to hcl encodable nomad job
+package hcl
 
 import (
 	"github.com/euforia/hashichain/pkg/nomad/structs"
@@ -39,15 +39,17 @@ func translateNetworkResource(n *api.NetworkResource) *structs.NetworkResource {
 		o.MBits = *n.MBits
 	}
 
-	ports := make([]*structs.Port, len(n.DynamicPorts)+len(n.ReservedPorts))
+	ports := make([]*structs.Port, 0, len(n.DynamicPorts)+len(n.ReservedPorts))
+
 	if len(n.DynamicPorts) > 0 {
-		for i, p := range n.DynamicPorts {
-			ports[i] = &structs.Port{Label: p.Label}
+		for _, p := range n.DynamicPorts {
+			ports = append(ports, &structs.Port{Label: p.Label})
 		}
 	}
+
 	if len(n.ReservedPorts) > 0 {
-		for i, p := range n.ReservedPorts {
-			ports[i] = &structs.Port{Label: p.Label, Static: p.Value}
+		for _, p := range n.ReservedPorts {
+			ports = append(ports, &structs.Port{Label: p.Label, Static: p.Value})
 		}
 	}
 

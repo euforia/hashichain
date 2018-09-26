@@ -1,4 +1,4 @@
-package translate
+package hcl
 
 import (
 	"github.com/euforia/hashichain/pkg/nomad/structs"

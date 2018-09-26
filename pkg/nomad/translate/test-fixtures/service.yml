@@ -1,0 +1,30 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.development
+    image: "project/app"
+    volumes:
+      - .:/go/src/github.com/org/project
+    environment:
+      - DB_HOST=db:5432
+      - DB_NAME=db1
+    depends_on:
+      - db
+    ports:
+      - 19000:9000
+      - 10000
+    command: 'go run main.go'
+  ui:
+    image: "project/app"
+    volumes:
+      - .:/go/src/github.com/org/project
+    ports:
+      - 13000:3000
+    working_dir: "/go/src/github.com/org/project/ui"
+    command: "yarn start"
+    environment:
+      - API_ADDR=http://app:9000
+    depends_on:
+      - app
