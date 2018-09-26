@@ -10,7 +10,7 @@ import (
 	"github.com/euforia/hclencoder"
 )
 
-const testFile = "../test-fixtures/example.nomad"
+const testFile = "test-fixtures/example.nomad"
 
 func Test_Translator(t *testing.T) {
 	job, err := jobspec.ParseFile(testFile)
