@@ -1,3 +1,8 @@
 # nomad
 
-This package currently contains helpers to write out nomad HCL job specs.
+This package contains helpers for nomad.
+
+## Features
+
+- Write nomad job spec in HCL
+- Convert docker-compose to nomad job spec

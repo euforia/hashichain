@@ -7,16 +7,28 @@ import (
 	"github.com/hashicorp/nomad/api"
 )
 
-func newTaskGroup(name string, count int) *api.TaskGroup {
-	group := api.NewTaskGroup(name, count)
-	// Add the distinct host constraint by default
-	return group.Constrain(&api.Constraint{Operand: "distinct_host"})
+func translateDeployUpdateConfig(c *types.UpdateConfig) *api.UpdateStrategy {
+	if c == nil {
+		return nil
+	}
+
+	stagger := c.Delay
+	us := &api.UpdateStrategy{
+		Stagger: &stagger,
+	}
+
+	if c.Parallelism != nil {
+		p := int(*c.Parallelism)
+		us.MaxParallel = &p
+	}
+
+	return us
 }
 
 func translate(c *types.Config) (*api.Job, error) {
 	job := api.NewServiceJob("test", "test", "us-west-2", 50)
 
-	group := newTaskGroup("default", 1)
+	group := api.NewTaskGroup("default", 1)
 
 	for _, service := range c.Services {
 		imgName, _, err := splitImageNameTag(service.Image)
@@ -29,13 +41,28 @@ func translate(c *types.Config) (*api.Job, error) {
 			return nil, err
 		}
 
-		// Add datastores in there own TaskGroup
+		count := 1
+		if service.Deploy.Replicas != nil {
+			count = int(*service.Deploy.Replicas)
+		}
+
+		updateConf := translateDeployUpdateConfig(service.Deploy.UpdateConfig)
+
 		if isDatastore(imgName) {
-			dsGroup := newTaskGroup("datastore", 1)
+			// Add datastores in there own TaskGroup
+			dsGroup := api.NewTaskGroup("datastore", count)
 			dsGroup = dsGroup.AddTask(task)
+			dsGroup.Update = updateConf
 			job = job.AddTaskGroup(dsGroup)
 		} else {
+			// Add to default group
 			group = group.AddTask(task)
+			if count > 1 {
+				group.Count = &count
+			}
+			if updateConf != nil {
+				group.Update = updateConf
+			}
 		}
 
 	}
@@ -144,10 +171,7 @@ func translateService(conf types.ServiceConfig) (*api.Task, error) {
 		},
 	}
 
-	// api.Service{
-	// 	Name: conf.Name,
-	// 	PortLabel:
-	// }
+	task.Services = makeTaskServices(conf.Name, ports)
 
 	// for _, vol := range conf.Volumes {
 
@@ -160,4 +184,18 @@ func translateService(conf types.ServiceConfig) (*api.Task, error) {
 	// }
 
 	return task, nil
+}
+
+func makeTaskServices(name string, ports map[string]types.ServicePortConfig) []*api.Service {
+	out := make([]*api.Service, 0, len(ports))
+
+	for k := range ports {
+		service := &api.Service{
+			Name:      name,
+			PortLabel: k,
+		}
+		out = append(out, service)
+	}
+
+	return out
 }

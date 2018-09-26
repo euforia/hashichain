@@ -16,6 +16,14 @@ services:
       - 19000:9000
       - 10000
     command: 'go run main.go'
+    deploy:
+      placement:
+        constraints:
+          - meta.key == value
+      replicas: 3
+      update_config:
+        parallelism: 2
+        delay: 10s
   ui:
     image: "project/app"
     volumes:

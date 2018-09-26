@@ -72,6 +72,7 @@ type Group struct {
 	Restart       *RestartPolicy    `hcl:"restart" hcle:"omitempty"`
 	Reschedule    *ReschedulePolicy `hcl:"reschedule" hcle:"omitempty"`
 	Tasks         []*Task           `hcl:"task"`
+	Update        *UpdateStrategy   `hcl:"update" hcle:"omitempty"`
 	Vault         *Vault            `hcl:"vault" hcle:"omitempty"`
 }
 

@@ -18,6 +18,7 @@ func translateGroup(g *api.TaskGroup) *structs.Group {
 	group.Constraints = translateConstraints(g.Constraints)
 	group.Reschedule = translateReschedule(g.ReschedulePolicy)
 	group.EphemeralDisk = translateEphemeralDisk(g.EphemeralDisk)
+	group.Update = translateUpdateStrategy(g.Update)
 
 	for i, task := range g.Tasks {
 		group.Tasks[i] = translateTask(task)

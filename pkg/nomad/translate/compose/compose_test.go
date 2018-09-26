@@ -1,8 +1,11 @@
 package compose
 
 import (
-	"os"
+	"bytes"
+	"fmt"
 	"testing"
+
+	"github.com/hashicorp/nomad/jobspec"
 
 	"github.com/euforia/cchain/pkg/compose"
 	"github.com/euforia/hashichain/pkg/nomad"
@@ -24,8 +27,19 @@ func Test_Compose(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = nomad.WriteJobSpec(os.Stdout, job)
+	buf := bytes.NewBuffer(nil)
+	err = nomad.WriteJobSpec(buf, job)
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	out := make([]byte, buf.Len())
+	copy(out, buf.Bytes())
+
+	_, err = jobspec.Parse(buf)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Printf("%s\n", out)
 }
