@@ -24,7 +24,7 @@ type ServiceCheck struct {
 	CheckRestart  *CheckRestart       `hcl:"check_restart" hcle:"omitempty"`
 	Command       string              `hcl:"command" hcle:"omitempty"`
 	GRPCService   string              `hcl:"grpc_service" hcle:"omitempty"`
-	GRPCUseTLS    bool                `hcl:"grpc_user_tls" hcle:"omitempty"`
+	GRPCUseTLS    bool                `hcl:"grpc_use_tls" hcle:"omitempty"`
 	InitialStatus string              `hcl:"initial_status" hcle:"omitempty"`
 	Interval      string              `hcl:"interval" hcle:"omitempty"`
 	Method        string              `hcl:"method" hcle:"omitempty"`

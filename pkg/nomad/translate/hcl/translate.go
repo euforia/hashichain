@@ -123,6 +123,17 @@ func translateConstraints(cs []*api.Constraint) []*structs.Constraint {
 	return out
 }
 
+func translateAffinities(cs []*api.Affinity) []*structs.Affinity {
+	if cs == nil {
+		return nil
+	}
+	out := make([]*structs.Affinity, len(cs))
+	for i, c := range cs {
+		out[i] = translateAffinity(c)
+	}
+	return out
+}
+
 func translateRestart(nr *api.RestartPolicy) *structs.RestartPolicy {
 	if nr == nil {
 		return nil
@@ -187,6 +198,18 @@ func translateConstraint(c *api.Constraint) *structs.Constraint {
 	nc := &structs.Constraint{
 		Attribute: c.LTarget,
 		Value:     c.RTarget,
+	}
+	if c.Operand != "=" {
+		nc.Operator = c.Operand
+	}
+	return nc
+}
+
+func translateAffinity(c *api.Affinity) *structs.Affinity {
+	nc := &structs.Affinity{
+		Attribute: c.LTarget,
+		Value:     c.RTarget,
+		Weight:    c.Weight,
 	}
 	if c.Operand != "=" {
 		nc.Operator = c.Operand

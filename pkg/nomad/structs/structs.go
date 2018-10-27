@@ -1,6 +1,17 @@
 // Package structs contains structs to write out a nomad HCL file
 package structs
 
+type Spread struct {
+	Attribute string          `hcl:"attribute" hcle:"omitempty"`
+	Weight    float64         `hcl:"weight" hcle:"omitempty"`
+	Targets   []*SpreadTarget `hcl:"target" hcle:"omitempty"`
+}
+
+type SpreadTarget struct {
+	ID      string  `hcl:",key"`
+	Percent float64 `hcl:"percent"`
+}
+
 // Vault is nomad vault block
 type Vault struct {
 	ChangeMode   string `hcl:"change_mode" hcle:"omitempty"`
@@ -12,11 +23,11 @@ type Vault struct {
 
 // ReschedulePolicy is a nomad group ReschedulePolicy
 type ReschedulePolicy struct {
-	Attempts      int    `hcl:"attempts"`
-	Interval      string `hcl:"interval"`
-	Delay         string `hcl:"delay"`
-	MaxDelay      string `hcl:"max_delay"`
-	DelayFunction string `hcl:"delay_function"`
+	Attempts      int    `hcl:"attempts" hcle:"omitempty"`
+	Interval      string `hcl:"interval" hcle:"omitempty"`
+	Delay         string `hcl:"delay" hcle:"omitempty"`
+	MaxDelay      string `hcl:"max_delay" hcle:"omitempty"`
+	DelayFunction string `hcl:"delay_function" hcle:"omitempty"`
 	Unlimited     bool   `hcl:"unlimited" hcle:"omitempty"`
 }
 
@@ -55,6 +66,13 @@ type Constraint struct {
 	Operator  string `hcl:"operator" hcle:"omitempty"`
 }
 
+type Affinity struct {
+	Attribute string  `hcl:"attribute" hcle:"omitempty"`
+	Value     string  `hcl:"value" hcle:"omitempty"`
+	Operator  string  `hcl:"operator" hcle:"omitempty"`
+	Weight    float64 `hcl:"weight" hcle:"omitempty"`
+}
+
 // EphemeralDisk is a nomad task EphemeralDisk
 type EphemeralDisk struct {
 	Sticky  bool `hcl:"sticky" hcle:"omitempty"`
@@ -64,13 +82,16 @@ type EphemeralDisk struct {
 
 // Group is a nomad TaskGroup
 type Group struct {
-	Count         int               `hcl:"count"`
-	Constraints   []*Constraint     `hcl:"constraint"`
+	Affinities    []*Affinity       `hcl:"affinity" hcle:"omitempty"`
+	Count         int               `hcl:"count" hcle:"omitempty"`
+	Constraints   []*Constraint     `hcl:"constraint" hcle:"omitempty"`
 	EphemeralDisk *EphemeralDisk    `hcl:"ephemeral_disk" hcle:"omitempty"`
 	Meta          map[string]string `hcl:"meta" hcle:"omitempty"`
+	Migrate       *MigrateStrategy  `hcl:"migrate" hcle:"omitempty"`
 	Name          string            `hcl:",key"`
 	Restart       *RestartPolicy    `hcl:"restart" hcle:"omitempty"`
 	Reschedule    *ReschedulePolicy `hcl:"reschedule" hcle:"omitempty"`
+	Spread        *Spread           `hcl:"spread" hcle:"omitempty"`
 	Tasks         []*Task           `hcl:"task"`
 	Update        *UpdateStrategy   `hcl:"update" hcle:"omitempty"`
 	Vault         *Vault            `hcl:"vault" hcle:"omitempty"`
@@ -87,5 +108,7 @@ type Job struct {
 	Update      *UpdateStrategy   `hcl:"update" hcle:"omitempty"`
 	Migrate     *MigrateStrategy  `hcl:"migrate" hcle:"omitempty"`
 	Constraints []*Constraint     `hcl:"constraint" hcle:"omitempty"`
+	Affinities  []*Affinity       `hcl:"affinity" hcle:"omitempty"`
+	Spread      *Spread           `hcl:"spread" hcle:"omitempty"`
 	Groups      []*Group          `hcl:"group"`
 }

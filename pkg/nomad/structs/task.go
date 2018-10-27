@@ -5,6 +5,8 @@ type Task struct {
 	Artifacts       []*Artifact            `hcl:"artifact" hcle:"omitempty"`
 	Config          map[string]interface{} `hcl:"config" hcle:"omitempty"`
 	Constraints     []*Constraint          `hcl:"constraint" hcle:"omitempty"`
+	Affinities      []*Affinity            `hcl:"affinity" hcle:"omitempty"`
+	Devices         []*Device              `hcl:"device" hcle:"omitempty"`
 	DispatchPayload *DispatchPayload       `hcl:"dispatch_payload" hcle:"omitempty"`
 	Driver          string                 `hcl:"driver"`
 	Env             map[string]string      `hcl:"env" hcle:"omitempty"`
@@ -30,6 +32,10 @@ type Artifact struct {
 	Mode        string            `hcl:"mode" hcle:"omitempty"`
 	Options     map[string]string `hcl:"options" hcle:"omitempty"`
 	Source      string            `hcl:"source" hcle:"omitempty"`
+}
+
+type Device struct {
+	ID string `hcl:",key"`
 }
 
 type LogConfig struct {
