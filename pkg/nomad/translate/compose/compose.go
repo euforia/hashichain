@@ -41,7 +41,7 @@ func translate(c *types.Config) (*api.Job, error) {
 
 		updateConf := translateDeployUpdateConfig(service.Deploy.UpdateConfig)
 
-		if isDatastore(imgName) {
+		if Datastores.IsSupported(imgName) {
 			// Add datastores in there own TaskGroup
 			dsGroup := api.NewTaskGroup("datastore", count)
 			dsGroup = dsGroup.AddTask(task)

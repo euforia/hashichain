@@ -6,19 +6,6 @@ import (
 	"strings"
 )
 
-var datastores = map[string]struct{}{
-	"postgres":              struct{}{},
-	"mysql":                 struct{}{},
-	"cockroachdb/cockroach": struct{}{},
-	"elasticsearch":         struct{}{},
-	"consul":                struct{}{},
-}
-
-func isDatastore(imageName string) bool {
-	_, ok := datastores[imageName]
-	return ok
-}
-
 func splitImageNameTag(name string) (string, string, error) {
 	parts := strings.Split(name, ":")
 	l := len(parts)
