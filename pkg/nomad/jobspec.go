@@ -1,8 +1,11 @@
 package nomad
 
 import (
+	"bytes"
 	"io"
+	"strings"
 
+	"github.com/aryann/difflib"
 	"github.com/hashicorp/nomad/api"
 	"github.com/hashicorp/nomad/jobspec"
 
@@ -34,4 +37,15 @@ func WriteJobSpec(w io.Writer, job *api.Job) error {
 		_, err = w.Write(b)
 	}
 	return err
+}
+
+// DiffJobSpec returns the diff between to jobs
+func DiffJobSpec(orig, job *api.Job) []difflib.DiffRecord {
+	oldBuff := bytes.NewBuffer(nil)
+	newBuff := bytes.NewBuffer(nil)
+	WriteJobSpec(oldBuff, orig)
+	WriteJobSpec(newBuff, job)
+	t1 := strings.Split(string(oldBuff.Bytes()), "\n")
+	t2 := strings.Split(string(newBuff.Bytes()), "\n")
+	return difflib.Diff(t1, t2)
 }
